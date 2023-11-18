@@ -38,8 +38,11 @@ def linear_schedule(initial_value, final_value=0.0):
 
     return scheduler
 
-def make_env(game, state, seed=0):
+def make_env(game, states, seed=0):
     def _init():
+        # Select a random state for each environment
+        state = np.random.choice(states)
+
         env = retro.make(
             game=game, 
             state=state, 
@@ -55,7 +58,8 @@ def make_env(game, state, seed=0):
 def main():
     # Set up the environment and model
     game = "StreetFighterIISpecialChampionEdition-Genesis"
-    env = SubprocVecEnv([make_env(game, state="Champion.Level12.RyuVsBison", seed=i) for i in range(NUM_ENV)])
+    states = ["Champion.Level1.RyuVsGuile", "Champion.Level2.RyuVsChunLi", "Champion.Level3.RyuVsZangief", "Champion.Level12.RyuVsBison"]
+    env = SubprocVecEnv([make_env(game, states=states, seed=i) for i in range(NUM_ENV)])
 
     # Set linear schedule for learning rate
     # Start
